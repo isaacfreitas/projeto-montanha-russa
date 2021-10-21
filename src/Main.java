@@ -29,6 +29,11 @@ public class Main {
         JLabel secondAttributeValueLabel = new JLabel(" ");
         secondAttributeValueLabel.setForeground(Color.white);
         secondAttributeValueLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        JLabel stateNameLabel = new JLabel(" ");
+        stateNameLabel.setForeground(Color.white);
+        JLabel stateValueLabel = new JLabel(" ");
+        stateValueLabel.setForeground(Color.white);
+        stateValueLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
         JLabel consoleTitleLabel = new JLabel("Console");
         consoleTitleLabel.setForeground(Color.white);
         consoleTitleLabel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 20));
@@ -55,11 +60,15 @@ public class Main {
                     firstAttributeValueLabel.setText(Integer.toString(((Wagon) selectedItem).chairCount));
                     secondAttributeNameLabel.setText("Tempo de viagem");
                     secondAttributeValueLabel.setText(Float.toString(((Wagon) selectedItem).transitDuration));
+                    stateNameLabel.setText("Estado");
+                    stateValueLabel.setText(((Wagon) selectedItem).state.toString());
                 } else if (selectedItem instanceof Passenger) {
                     firstAttributeNameLabel.setText("Tempo de embarque");
                     firstAttributeValueLabel.setText(Float.toString(((Passenger) selectedItem).boardingDuration));
                     secondAttributeNameLabel.setText("Tempo de desembarque");
                     secondAttributeValueLabel.setText(Float.toString(((Passenger) selectedItem).landingDuration));
+                    stateNameLabel.setText("Estado");
+                    stateValueLabel.setText(((Passenger) selectedItem).state.toString());
                 }
             }
         });
@@ -140,6 +149,9 @@ public class Main {
         inspectorPanel.add(secondAttributeNameLabel);
         inspectorPanel.add(secondAttributeValueLabel);
         inspectorPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        inspectorPanel.add(stateNameLabel);
+        inspectorPanel.add(stateValueLabel);
+        inspectorPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         JPanel simulationPanel = new JPanel();
         simulationPanel.setBackground(skyBlue);
         JPanel topPanel = new JPanel();
