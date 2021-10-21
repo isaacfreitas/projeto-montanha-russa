@@ -7,4 +7,9 @@ public class Wagon {
         this.chairCount = chairCount;
         this.transitDuration = transitDuration;
     }
+
+    @Override
+    public String toString() {
+        return "Vagão";
+    }
 }
