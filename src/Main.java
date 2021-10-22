@@ -9,6 +9,8 @@ public class Main {
     private static Wagon wagon;
     private static ArrayList<Passenger> passengers = new ArrayList<>();
 
+    private static JTextArea consoleTextArea;
+
     public static void main(String[] args) {
         // Colors
         final Color mintGreen = new Color(0x5BBA81);
@@ -36,7 +38,7 @@ public class Main {
         stateValueLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
         JLabel consoleTitleLabel = new JLabel("Console");
         consoleTitleLabel.setForeground(Color.white);
-        consoleTitleLabel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 20));
+        consoleTitleLabel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
         consoleTitleLabel.setFont(new Font("SansSerif", Font.PLAIN, 28));
         // Misc
         JComboBox inspectorComboBox = new JComboBox() {
@@ -72,7 +74,7 @@ public class Main {
                 }
             }
         });
-        JTextArea consoleTextArea = new JTextArea("Passageiro 1 desembarcou do vagão");
+        consoleTextArea = new JTextArea("Passageiro 1 desembarcou do vagão");
         consoleTextArea.setBackground(darkGray);
         consoleTextArea.setForeground(Color.white);
         consoleTextArea.setEditable(false);
@@ -104,11 +106,15 @@ public class Main {
                     float transitDuration = Float.parseFloat(transitDurationField.getText());
                     wagon = new Wagon(chairCount, transitDuration);
                     inspectorComboBox.addItem(wagon);
+                    MontanhaRussa.adicionarVagao(wagon);
                     addWagonButton.setEnabled(false);
                     addPassengerButton.setEnabled(true);
                 } catch (NumberFormatException nfe) {
                     String errorMessage = "A quantidade de cadeiras e o tempo de viagem devem ser números.";
                     JOptionPane.showMessageDialog(null, errorMessage, "Entrada Inválida", JOptionPane.ERROR_MESSAGE);
+                } catch (InterruptedException ie) {
+                    String errorMessage = "A thread do vagão foi interrompida.";
+                    JOptionPane.showMessageDialog(null, errorMessage, "Thread Interrompida", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -127,6 +133,7 @@ public class Main {
                     Passenger passenger = new Passenger(passengerIdCount, boardingDuration, landingDuration);
                     passengers.add(passenger);
                     inspectorComboBox.addItem(passenger);
+                    MontanhaRussa.adicionarPassageiro(passenger);
                     passengerIdCount++;
                 } catch (NumberFormatException nfe) {
                     String errorMessage = "O tempo de embarque e de desembarque devem ser números.";
@@ -188,5 +195,10 @@ public class Main {
         consoleTextArea.setText(null);
         frame.setResizable(false);
         frame.setVisible(true);
+    }
+
+    public static void printToConsole(String message) {
+        consoleTextArea.append("\n" + message);
+        consoleTextArea.setCaretPosition(consoleTextArea.getText().length());
     }
 }
