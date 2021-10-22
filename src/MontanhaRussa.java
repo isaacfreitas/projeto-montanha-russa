@@ -7,20 +7,17 @@ public class MontanhaRussa {
     public static Semaphore carrinho = new Semaphore(1, true);
     public static Semaphore andando = new Semaphore(1, true);
     public static Semaphore mutex = new Semaphore(1, true);
-    public static Semaphore passageiro = new Semaphore(1, true);
+    public static Semaphore passageiro;
 
-
-    public static void main(String[] args) throws InterruptedException {
-        passageiros = 2;
-        int pessoas = 6;
-        int tempoEntrada = 5;
-        int tempoSaida = 5;
-        tempoPasseio = 5;
-        passageiro.release(passageiros - 1);
+    public static void adicionarVagao(Wagon vagao) throws InterruptedException {
+        passageiros = vagao.chairCount;
+        tempoPasseio = (long) vagao.transitDuration;
+        passageiro = new Semaphore(passageiros, true);
         new Vagao();
-        for (int i = 0; i < pessoas; i++) {
-            new Passageiro("Pessoa " + (i + 1), tempoEntrada, tempoSaida);
-        }
+    }
+
+    public static void adicionarPassageiro(Passenger passageiro) {
+        new Passageiro(passageiro.toString(), (long) passageiro.boardingDuration, (long) passageiro.landingDuration);
     }
 }
 
@@ -59,12 +56,12 @@ class Passageiro implements Runnable {
                 Embarque(tempoDeEmbarque);
                 MontanhaRussa.mutex.acquire();
                 MontanhaRussa.Npass++;
-                System.out.println("Passageiro :" + Thread.currentThread().getName());
+                Main.printToConsole("Passageiro :" + Thread.currentThread().getName());
 
                 if (MontanhaRussa.Npass == MontanhaRussa.passageiros) {
-                    System.out.println("Ultimo Passageiro :" + Thread.currentThread().getName());
+                    Main.printToConsole("Ultimo Passageiro :" + Thread.currentThread().getName());
                     MontanhaRussa.carrinho.release();
-                    System.out.println("Carrinho Andando :" + Thread.currentThread().getName());
+                    Main.printToConsole("Carrinho Andando :" + Thread.currentThread().getName());
                     while (true) {
                         if (MontanhaRussa.andando.availablePermits() >= 1) {
                             break;
@@ -75,24 +72,24 @@ class Passageiro implements Runnable {
 
                 } else {
                     MontanhaRussa.mutex.release();
-                    System.out.println("Passageiro Esperando:" + Thread.currentThread().getName());
+                    Main.printToConsole("Passageiro Esperando:" + Thread.currentThread().getName());
                     while (true) {
                         if (MontanhaRussa.andando.availablePermits() >= 1) {
                             break;
                         }
                     }
                     MontanhaRussa.andando.acquire();
-                    System.out.println("Passageiro depois de Passear:" + Thread.currentThread().getName());
+                    Main.printToConsole("Passageiro depois de Passear:" + Thread.currentThread().getName());
                 }
                 Dembarque(tempoDeDesembarque);
                 MontanhaRussa.mutex.acquire();
                 MontanhaRussa.Npass--;
                 if (MontanhaRussa.Npass == 0) {
-                    System.out.println("Ultimo Passageiro desembarcou:" + Thread.currentThread().getName());
+                    Main.printToConsole("Ultimo Passageiro desembarcou:" + Thread.currentThread().getName());
                     MontanhaRussa.passageiro.release(MontanhaRussa.passageiros);
                     MontanhaRussa.mutex.release();
                 } else {
-                    System.out.println("Passageiro desembarcou:" + Thread.currentThread().getName());
+                    Main.printToConsole("Passageiro desembarcou:" + Thread.currentThread().getName());
                     MontanhaRussa.mutex.release();
                 }
 
